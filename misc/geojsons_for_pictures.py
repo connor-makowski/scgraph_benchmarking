@@ -1,11 +1,12 @@
+from scgraph import GeoGraph
 
-from scgraph.geographs.marnet import marnet_geograph
-from scgraph.geographs.us_freeway import us_freeway_geograph
-from scgraph.geographs.north_america_rail import north_america_rail_geograph
-from scgraph.geographs.oak_ridge_maritime import oak_ridge_maritime_geograph
-from scgraph_data.world_highways import world_highways_geograph
-from scgraph_data.world_highways_and_marnet import world_highways_and_marnet_geograph
-from scgraph_data.world_railways import world_railways_geograph
+marnet_geograph = GeoGraph.load_geograph('marnet')
+us_freeway_geograph = GeoGraph.load_geograph('us_freeway')
+north_america_rail_geograph = GeoGraph.load_geograph('north_america_rail')
+oak_ridge_maritime_geograph = GeoGraph.load_geograph('oak_ridge_maritime')
+world_highways_geograph = GeoGraph.load_geograph('world_highways')
+world_highways_and_marnet_geograph = GeoGraph.load_geograph('world_highways_and_marnet')
+world_railways_geograph = GeoGraph.load_geograph('world_railways')
 
 for name, scgraph_object in [
     ('Marnet', marnet_geograph),

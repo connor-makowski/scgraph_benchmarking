@@ -1,10 +1,10 @@
 import requests
-from time import time
 from pamda import pamda
-
-from scgraph_data.world_highways import world_highways_geograph
-from scgraph.geographs.us_freeway import us_freeway_geograph
 from scgraph.utils import haversine
+from scgraph import GeoGraph
+
+world_highways_geograph = GeoGraph.load_geograph('world_highways')
+us_freeway_geograph = GeoGraph.load_geograph('us_freeway')
 
 import osmnx as ox
 import networkx as nx

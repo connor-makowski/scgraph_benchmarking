@@ -1,6 +1,6 @@
 
 from scgraph.grid import GridGraph
-from networkx import Graph as NXGraph, multi_source_dijkstra
+from networkx import Graph as NXGraph, dijkstra_predecessor_and_distance
 from igraph import Graph as IGGraph
 
 def make_nxgraph(graph):
@@ -56,4 +56,4 @@ def get_igraph_shortest_path(graph, origin, destination):
     }
 
 def get_nx_shortest_path(graph, origin, destination):
-    return multi_source_dijkstra(G=graph, sources={origin}, target=destination, weight='weight')
+    return dijkstra_predecessor_and_distance(G=graph, source=origin, weight='weight')
