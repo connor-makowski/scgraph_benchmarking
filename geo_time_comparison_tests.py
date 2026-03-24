@@ -29,7 +29,7 @@ cities = {
     'Detroit': (42.3314, -83.0458)
 }
 
-#TODO: Remove this hack to avoid hitting google every time
+# Uncomment this hack to avoid hitting google every time
 prev_output = pamda.read_csv('outputs/geo_time_comparison_tests.csv')
 
 
@@ -53,7 +53,7 @@ for city1, coord1 in cities.items():
                 test_us_freeway_scgraph,
                 test_haversine,
                 test_haversine_circuity,
-                # test_google
+                # test_google,
             ]:
                 time_start = time()
                 length = function(coord1, coord2)
@@ -62,7 +62,7 @@ for city1, coord1 in cities.items():
                 output_item[f"{function.__name__}_length_km"] = length
 
 
-            # TODO: Remove this hack to avoid hitting google every time
+            # Uncomment this hack to avoid hitting google every time (comment out test_google above)
             output_item['test_google_time_ms'] = prev_output[idx]['test_google_time_ms']
             output_item['test_google_length_km'] = prev_output[idx]['test_google_length_km']
             idx += 1

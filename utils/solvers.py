@@ -88,8 +88,11 @@ def test_haversine_circuity(coord1, coord2):
 ox.settings.log_console = False
 ox.settings.use_cache = True
 
-def build_graph_between_coords(coord1, coord2, buffer_km=50):
-    # Create a bounding box that covers both points with a buffer
+def build_osmnx_graph(coord1, coord2, buffer_km=50):
+    """
+    Download and build an OSMNx graph covering the region between coord1 and coord2.
+    This is the data collection step, separate from solving.
+    """
     mid_lat = (coord1[0] + coord2[0]) / 2
     mid_lon = (coord1[1] + coord2[1]) / 2
 
@@ -109,22 +112,28 @@ def build_graph_between_coords(coord1, coord2, buffer_km=50):
 # Functions for timing distance calculations #
 ##############################################
 
-def test_osmnx(coord1, coord2):
-    print(f"\nComputing route from {coord1} to {coord2}...")
-
-    # Build the graph
-    G = build_graph_between_coords(coord1, coord2)
-
-    # Find nearest nodes
+def solve_nx_on_osmnx(G, coord1, coord2):
+    """
+    Solve shortest path using NetworkX on a pre-built OSMNx graph.
+    Data collection (build_osmnx_graph) must be done separately.
+    """
     orig_node = ox.distance.nearest_nodes(G, X=coord1[1], Y=coord1[0])
     dest_node = ox.distance.nearest_nodes(G, X=coord2[1], Y=coord2[0])
-
     try:
-        # Compute shortest path length (in meters)
-        length_m = nx.shortest_path_length(G, orig_node, dest_node, weight='length')  # Convert to kilometers
-        length_km = length_m / 1000  # Convert to kilometers
-        # print(f"OSMNx distance: {length_km:.2f} km")
-        return length_km
+        length_m = nx.shortest_path_length(G, orig_node, dest_node, weight='length')
+        return length_m / 1000  # Convert to kilometers
     except nx.NetworkXNoPath:
-        # print("No path found between these coordinates on the filtered road network.")
         return None
+
+def solve_scgraph_on_osmnx(geograph, coord1, coord2):
+    """
+    Solve shortest path using SCGraph on a pre-built GeoGraph (converted from OSMNx).
+    Data collection and conversion (build_osmnx_graph + make_scgraph_from_osmnx)
+    must be done separately.
+    """
+    output = geograph.get_shortest_path(
+        origin_node={"latitude": coord1[0], "longitude": coord1[1]},
+        destination_node={"latitude": coord2[0], "longitude": coord2[1]},
+        output_units="km",
+    )
+    return output['length']

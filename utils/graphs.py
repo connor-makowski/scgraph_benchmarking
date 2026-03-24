@@ -1,5 +1,6 @@
 
 from scgraph.grid import GridGraph
+from scgraph import GeoGraph
 from networkx import Graph as NXGraph, dijkstra_predecessor_and_distance
 from igraph import Graph as IGGraph
 
@@ -13,7 +14,7 @@ def make_nxgraph(graph):
             nxGraph.add_edge(idx_from, idx_to, weight=weight)
     return nxGraph
 
-def make_igraph(graph):
+def igraph_from_scgraph(graph):
     """
     Convert a scgraph graph object to an igraph graph.
     """
@@ -26,6 +27,22 @@ def make_igraph(graph):
             if from_node < to_node:
                 edges.append((from_node, to_node))
                 weights.append(weight)
+
+    ig_graph = IGGraph(edges=edges, directed=False)
+    ig_graph.es['weight'] = weights
+    return ig_graph
+
+def igraph_from_osmnx(osmnx_graph):
+    """
+    Convert an OSMNx graph to an igraph graph.
+    """
+    edges = []
+    weights = []
+
+    for u, v, data in osmnx_graph.edges(data=True):
+        weight = data.get('length', 1)  # Default to 1 if no length attribute
+        edges.append((u, v))
+        weights.append(weight)
 
     ig_graph = IGGraph(edges=edges, directed=False)
     ig_graph.es['weight'] = weights
@@ -57,3 +74,9 @@ def get_igraph_shortest_path(graph, origin, destination):
 
 def get_nx_shortest_path(graph, origin, destination):
     return dijkstra_predecessor_and_distance(G=graph, source=origin, weight='weight')
+
+def make_scgraph_from_osmnx(osmnx_graph):
+    """
+    Convert an OSMNx graph to a SCGraph GeoGraph using load_from_osmnx_graph.
+    """
+    return GeoGraph.load_from_osmnx_graph(osmnx_graph)

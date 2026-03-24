@@ -9,7 +9,7 @@ us_freeway_geograph = GeoGraph.load_geograph('us_freeway')
 from pamda import pamda
 from pamda.pamda_timer import pamda_timer
 
-from utils.graphs import make_nxgraph, make_igraph, make_gridgraph, get_nx_shortest_path, get_igraph_shortest_path
+from utils.graphs import make_nxgraph, igraph_from_scgraph, make_gridgraph, get_nx_shortest_path, get_igraph_shortest_path
 
 
 graph_data = [
@@ -36,7 +36,7 @@ for name, scgraph_object in graph_data:
     scgraph_graph_object = scgraph_object.graph_object
 
     nxgraph = make_nxgraph(scgraph_graph)
-    igraph = make_igraph(scgraph_graph)
+    igraph = igraph_from_scgraph(scgraph_graph)
     
     if 'gridgraph' in name.lower():
         a_star_heuristic = scgraph_object.euclidean_heuristic
