@@ -65,11 +65,25 @@ def ch_solve(geograph, origin, destination):
         output_units='km', algorithm_fn='contraction_hierarchy',
     )['length']
 
+def tnr_solve(geograph, origin, destination):
+    return geograph.get_shortest_path(
+        origin_node=origin, destination_node=destination,
+        output_units='km', algorithm_fn='tnr',
+    )['length']
+
+def dijkstra_buckets_solve(geograph, origin, destination):
+    return geograph.get_shortest_path(
+        origin_node=origin, destination_node=destination,
+        output_units='km', algorithm_fn='dijkstra_buckets',
+    )['length']
+
 algorithms = [
     ('dijkstra',              dijkstra_solve),
     ('a_star',                a_star_solve),
     ('cached_shortest_path',  cached_solve),
     ('contraction_hierarchy', ch_solve),
+    ('tnr',                   tnr_solve),
+    ('dijkstra_buckets',      dijkstra_buckets_solve),
 ]
 
 output = []
@@ -84,6 +98,19 @@ for graph_name in geograph_names:
     elapsed = (time.perf_counter() - t0) * 1000
     output.append({
         'function': 'create_contraction_hierarchy',
+        'unit': 'ms',
+        'time': elapsed,
+        'avg_time_per_dist': 0,
+        'graph': graph_name,
+    })
+
+    # TNR build (one-time timing)
+    print('Building TNR hierarchy for graph (one-time timing)...')
+    t0 = time.perf_counter()
+    geograph.graph_object.create_tnr_hierarchy()
+    elapsed = (time.perf_counter() - t0) * 1000
+    output.append({
+        'function': 'create_tnr_hierarchy',
         'unit': 'ms',
         'time': elapsed,
         'avg_time_per_dist': 0,
