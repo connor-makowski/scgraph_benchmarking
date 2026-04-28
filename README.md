@@ -35,8 +35,50 @@ You should also modify the `geo_time_comparisons_test.py` script to actually fet
 To run the benchmarks, execute the desired benchmark script. For example, to run the distance matrix benchmark:
 
 ```bash
-python geo_time_comparisons_test.py
+python geo_time_comparison_tests.py
 ```
 
 ### Output
 The output of the benchmarks will be saved in the `outputs` directory. Each benchmark script will generate a file containing the results of the benchmark, including execution times and any relevant metrics.
+
+---
+
+## OSRM Benchmarks
+
+Two additional scripts benchmark [OSRM](http://project-osrm.org/) (Open Source Routing Machine) using Docker.
+OSRM requires a one-time setup before running either script.
+
+> **Disk space:** `osrm_data/` will use approximately 20–30 GB for the US OSM extract and processed files.
+
+### Setup (run once)
+
+```bash
+./osrm_setup.sh
+```
+
+This script:
+1. Pulls the `osrm/osrm-backend` Docker image
+2. Downloads `us-latest.osm.pbf` from Geofabrik (~9 GB)
+3. Runs `osrm-extract` with the car profile
+4. Runs `osrm-contract` (Contraction Hierarchies)
+5. Starts the OSRM HTTP server on `localhost:5000`
+
+All step durations are written to `outputs/osrm_setup_timing.json` for use by the benchmark scripts.
+
+### Running OSRM Benchmarks
+
+With the server running, execute either script:
+
+```bash
+# 120 unique pairs of 16 US cities — per-pair query time + distance
+python osrm_time_tests.py
+
+# Same 3 city pairs as time_dist_comparisons.py — 10-iteration query timing
+python osrm_time_dist_comparisons.py
+```
+
+### Stopping the Server
+
+```bash
+docker stop osrm_server_ch osrm_server_mld
+```
