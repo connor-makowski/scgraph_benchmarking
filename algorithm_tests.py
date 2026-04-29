@@ -77,13 +77,21 @@ def dijkstra_buckets_solve(geograph, origin, destination):
         output_units='km', algorithm_fn='dijkstra_buckets',
     )['length']
 
+def bmssp_solve(geograph, origin, destination):
+    return geograph.get_shortest_path(
+        origin_node=origin, destination_node=destination,
+        output_units='km', algorithm_fn='bmssp',
+    )['length']
+
+# (name, solver_fn, second_pass) — second_pass=False for single-query algorithms
 algorithms = [
-    ('dijkstra',              dijkstra_solve),
-    ('a_star',                a_star_solve),
-    ('cached_shortest_path',  cached_solve),
-    ('contraction_hierarchy', ch_solve),
-    ('tnr',                   tnr_solve),
-    ('dijkstra_buckets',      dijkstra_buckets_solve),
+    ('dijkstra',              dijkstra_solve,         False),
+    ('a_star',                a_star_solve,           False),
+    ('bmssp',                 bmssp_solve,            False),
+    ('dijkstra_buckets',      dijkstra_buckets_solve, False),
+    ('cached_shortest_path',  cached_solve,           True),
+    ('contraction_hierarchy', ch_solve,               True),
+    ('tnr',                   tnr_solve,              True),
 ]
 
 output = []
@@ -146,40 +154,34 @@ for graph_name in geograph_names:
     geograph.graph_object.reset_cache()
 
     print('Calculating shortest paths...')
-    for algo_name, solver_fn in algorithms:
+    for algo_name, solver_fn, second_pass in algorithms:
         print(f"    Testing algorithm: {algo_name}")
-        output_data = {
-            'first_pass': [],
-            'second_pass': [],
-        }
+        output_data = {'first_pass': [], 'second_pass': []}
 
-        for pass_type in ['first_pass', 'second_pass']:
+        passes = ['first_pass', 'second_pass'] if second_pass else ['first_pass']
+        for pass_type in passes:
             for origin_name, dest_name, origin, destination in city_pairs:
-                # First pass (one-time timing)
                 t0 = time.perf_counter()
                 dist = solver_fn(geograph, origin, destination)
                 elapsed = (time.perf_counter() - t0) * 1000
                 output_data[pass_type].append(elapsed)
 
-        
-
-        first_pass_info = {
+        output.append({
             'function': f"distance_matrix_{algo_name}_first_pass",
             'unit': 'ms',
             'time': sum(output_data['first_pass']),
             'avg_time_per_dist': sum(output_data['first_pass']) / num_combinations,
             'graph': graph_name
-        }
-        output.append(first_pass_info)
+        })
 
-        second_pass_info = {
-            'function': f"distance_matrix_{algo_name}_second_pass",
-            'unit': 'ms',
-            'time': sum(output_data['second_pass']),
-            'avg_time_per_dist': sum(output_data['second_pass']) / num_combinations,
-            'graph': graph_name
-        }
-        output.append(second_pass_info)
+        if second_pass:
+            output.append({
+                'function': f"distance_matrix_{algo_name}_second_pass",
+                'unit': 'ms',
+                'time': sum(output_data['second_pass']),
+                'avg_time_per_dist': sum(output_data['second_pass']) / num_combinations,
+                'graph': graph_name
+            })
 
 
 pamda.write_csv(data=output, filename='outputs/algorithm_tests.csv')
