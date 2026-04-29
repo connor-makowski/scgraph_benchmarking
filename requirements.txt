@@ -4,4 +4,4 @@ osmnx==2.1.0
 pamda==2.7.2
 requests==2.32.4
 type_enforced==2.3.0
-scgraph==3.1.1
+scgraph==3.2.1

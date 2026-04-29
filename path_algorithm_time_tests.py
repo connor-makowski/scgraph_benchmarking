@@ -1,5 +1,6 @@
+import time
 from scgraph import Graph as SCGraph
-from scgraph import GeoGraph 
+from scgraph import GeoGraph
 
 world_highways_and_marnet_geograph = GeoGraph.load_geograph('world_highways_and_marnet')
 world_highways_geograph = GeoGraph.load_geograph('world_highways')
@@ -55,12 +56,25 @@ for name, scgraph_object in graph_data:
             ('case_4', 5000, 1500)
         ]
 
-    # print("Preprocessing contraction hierarchy...")
-    # scgraph_object.create_contraction_hierarchy()
-    # print("Done")
-
     graph_nodes = len(scgraph_graph)
     graph_edges = nxgraph.number_of_edges()
+
+    if graph_nodes < 100_000:
+        print("  Preprocessing contraction hierarchy...")
+        t0 = time.perf_counter()
+        scgraph_graph_object.create_contraction_hierarchy()
+        ch_build_ms = (time.perf_counter() - t0) * 1000
+        print(f"  CH build time: {ch_build_ms:.2f} ms")
+
+        print("  Preprocessing TNR hierarchy...")
+        t0 = time.perf_counter()
+        scgraph_graph_object.create_tnr_hierarchy()
+        tnr_build_ms = (time.perf_counter() - t0) * 1000
+        print(f"  TNR build time: {tnr_build_ms:.2f} ms")
+    else:
+        print(f"  Skipping CH/TNR preprocessing ({graph_nodes:,} nodes >= 100k limit).")
+        ch_build_ms = None
+        tnr_build_ms = None
 
 
     for case_name, origin, destination in test_cases:
@@ -81,11 +95,21 @@ for name, scgraph_object in graph_data:
         sc_a_star_time_stats = pamda_timer(scgraph_graph_object.a_star, iterations = 10).get_time_stats(origin_id=origin, destination_id=destination, heuristic_fn=a_star_heuristic)
         print(f"SCGraph A* time: {sc_a_star_time_stats['avg']:.2f} ms (stdev: {sc_a_star_time_stats['std']:.2f})")
 
-        # sc_ch_time_stats = pamda_timer(scgraph_graph_object.contraction_hierarchy, iterations = 10).get_time_stats(origin_id=origin, destination_id=destination)
-        # print(f"SCGraph CH time: {sc_ch_time_stats['avg']:.2f} ms (stdev: {sc_ch_time_stats['std']:.2f})")
+        sc_dijkstra_buckets_time_stats = pamda_timer(scgraph_graph_object.dijkstra_buckets, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
+        print(f"SCGraph Dijkstra Buckets time: {sc_dijkstra_buckets_time_stats['avg']:.2f} ms (stdev: {sc_dijkstra_buckets_time_stats['std']:.2f})")
 
-        sc_bmssp_time_stats = pamda_timer(scgraph_graph_object.bmssp, iterations = 10).get_time_stats(origin_id=origin, destination_id=destination)
+        sc_bmssp_time_stats = pamda_timer(scgraph_graph_object.bmssp, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
         print(f"SCGraph BMSSP time: {sc_bmssp_time_stats['avg']:.2f} ms (stdev: {sc_bmssp_time_stats['std']:.2f})")
+
+        if graph_nodes < 100_000:
+            sc_ch_time_stats = pamda_timer(scgraph_graph_object.contraction_hierarchy, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
+            print(f"SCGraph CH time: {sc_ch_time_stats['avg']:.2f} ms (stdev: {sc_ch_time_stats['std']:.2f})")
+
+            sc_tnr_time_stats = pamda_timer(scgraph_graph_object.tnr, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
+            print(f"SCGraph TNR time: {sc_tnr_time_stats['avg']:.2f} ms (stdev: {sc_tnr_time_stats['std']:.2f})")
+        else:
+            sc_ch_time_stats = {'avg': None, 'std': None}
+            sc_tnr_time_stats = {'avg': None, 'std': None}
 
         output.append({
             'graph_name': name,
@@ -93,18 +117,24 @@ for name, scgraph_object in graph_data:
             'graph_nodes': graph_nodes,
             'graph_edges': graph_edges,
             'node_steps_needed': len(solved['path']),
+            'sc_ch_build_ms': ch_build_ms,
+            'sc_tnr_build_ms': tnr_build_ms,
             'nx_dijkstra_time_ms': nx_dijkstra_time_stats['avg'],
             'ig_shortest_path_time_ms': ig_shortest_path_time_stats['avg'],
             'sc_dijkstra_modified_time_ms': sc_dijkstra_modified_time_stats['avg'],
             'sc_a_star_time_ms': sc_a_star_time_stats['avg'],
-            # 'sc_ch_time_ms': sc_ch_time_stats['avg'],
+            'sc_dijkstra_buckets_time_ms': sc_dijkstra_buckets_time_stats['avg'],
             'sc_bmssp_time_ms': sc_bmssp_time_stats['avg'],
+            'sc_ch_time_ms': sc_ch_time_stats['avg'],
+            'sc_tnr_time_ms': sc_tnr_time_stats['avg'],
             'nx_dijkstra_stdev': nx_dijkstra_time_stats['std'],
             'ig_shortest_path_stdev': ig_shortest_path_time_stats['std'],
             'sc_dijkstra_modified_stdev': sc_dijkstra_modified_time_stats['std'],
             'sc_a_star_stdev': sc_a_star_time_stats['std'],
-            # 'sc_ch_stdev': sc_ch_time_stats['std'],
-            'sc_bmssp_stdev': sc_bmssp_time_stats['std']
+            'sc_dijkstra_buckets_stdev': sc_dijkstra_buckets_time_stats['std'],
+            'sc_bmssp_stdev': sc_bmssp_time_stats['std'],
+            'sc_ch_stdev': sc_ch_time_stats['std'],
+            'sc_tnr_stdev': sc_tnr_time_stats['std'],
         })
 
 pamda.write_csv(
