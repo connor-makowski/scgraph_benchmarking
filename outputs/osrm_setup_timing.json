@@ -1,0 +1,10 @@
+{
+  "pull_ms": 2222,
+  "download_ms": 762587,
+  "extract_ms": 1896372,
+  "contract_ms": 4781665,
+  "partition_ms": 1916171,
+  "customize_ms": 205974,
+  "ch_startup_ms": 69776,
+  "mld_startup_ms": 95158
+}

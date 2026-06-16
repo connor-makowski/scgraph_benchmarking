@@ -1,0 +1,15 @@
+module,function,unit,iterations,avg,min,max,std,combination,category,solver,distance_km
+osrm_setup,osrm_pull,ms,1,2222,2222,2222,0,global,setup,osrm_pull,
+osrm_setup,osrm_download,ms,1,762587,762587,762587,0,global,setup,osrm_download,
+osrm_setup,osrm_extract,ms,1,1896372,1896372,1896372,0,global,setup,osrm_extract,
+osrm_setup,osrm_contract,ms,1,4781665,4781665,4781665,0,global,setup,osrm_contract,
+osrm_setup,osrm_partition,ms,1,1916171,1916171,1916171,0,global,setup,osrm_partition,
+osrm_setup,osrm_customize,ms,1,205974,205974,205974,0,global,setup,osrm_customize,
+osrm_setup,osrm_ch_startup,ms,1,69776,69776,69776,0,global,setup,osrm_ch_startup,
+osrm_setup,osrm_mld_startup,ms,1,95158,95158,95158,0,global,setup,osrm_mld_startup,
+osrm_time_dist_comparisons.test_osrm_ch,test_osrm_ch,ms,10,10.345196723937988,2.283811569213867,76.74431800842285,22.14786976334243,LA_SD,network_solve,osrm_ch,195.483
+osrm_time_dist_comparisons.test_osrm_mld,test_osrm_mld,ms,10,57.945871353149414,55.663347244262695,63.79127502441406,2.976292671259804,LA_SD,network_solve,osrm_mld,195.483
+osrm_time_dist_comparisons.test_osrm_ch,test_osrm_ch,ms,10,5.7221174240112305,1.379251480102539,31.494140625,9.294158403265772,ORL_TAM,network_solve,osrm_ch,136.0045
+osrm_time_dist_comparisons.test_osrm_mld,test_osrm_mld,ms,10,46.90823554992676,46.36335372924805,47.556400299072266,0.40325617214812065,ORL_TAM,network_solve,osrm_mld,136.0045
+osrm_time_dist_comparisons.test_osrm_ch,test_osrm_ch,ms,10,8.613443374633789,2.033710479736328,52.19125747680664,15.057225935695813,NYC_PHI,network_solve,osrm_ch,152.0846
+osrm_time_dist_comparisons.test_osrm_mld,test_osrm_mld,ms,10,42.01655387878418,4.689693450927734,72.25680351257324,20.061665775990516,NYC_PHI,network_solve,osrm_mld,152.0846

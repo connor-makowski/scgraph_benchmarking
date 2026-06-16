@@ -1,0 +1,10 @@
+cache
+venv
+.venv
+keys.json
+*.pyc
+geojsons
+osrm_data
+.claude
+.gemini
+*.egg-info
