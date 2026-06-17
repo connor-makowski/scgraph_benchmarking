@@ -41,6 +41,7 @@ dependencies = [
 dev = [
     "autoflake>=2.3.1",
     "black>=25.1.0",
+    "ipykernel",
 ]
 
 [project.urls]
