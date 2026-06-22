@@ -64,8 +64,9 @@ output = []
 # ── One-time setup costs (from osrm_setup.sh) ─────────────────────────────────
 setup_timing = pamda.read_json('outputs/osrm_setup_timing.json')
 
-for key in ('pull_ms', 'download_ms', 'extract_ms', 'contract_ms',
-            'partition_ms', 'customize_ms', 'ch_startup_ms', 'mld_startup_ms'):
+for key in ('pull_ms', 'clone_ms', 'build_ms', 'download_ms', 'extract_ms',
+            'contract_ms', 'partition_ms', 'customize_ms', 'ch_startup_ms',
+            'mld_startup_ms'):
     output.append(make_setup_row(
         function_name=f'osrm_{key[:-3]}',  # strip trailing _ms
         elapsed_ms=setup_timing[key],

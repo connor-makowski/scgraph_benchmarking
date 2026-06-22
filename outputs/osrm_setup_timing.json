@@ -1,6 +1,8 @@
 {
-  "pull_ms": 2222,
-  "download_ms": 762587,
+  "pull_ms": 0,
+  "clone_ms": 5870,
+  "build_ms": 624700,
+  "download_ms": 1174645,
   "extract_ms": 1896372,
   "contract_ms": 4781665,
   "partition_ms": 1916171,

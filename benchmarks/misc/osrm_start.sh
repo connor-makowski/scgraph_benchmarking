@@ -8,8 +8,19 @@
 
 set -e
 
+# Helper to get current time in milliseconds (portable across Mac/Linux)
+get_now_ms() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    python3 -c 'import time; print(int(time.time() * 1000))'
+  else
+    date +%s%3N
+  fi
+}
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 DATA_DIR="$SCRIPT_DIR/osrm_data"
+OUTPUTS_DIR="$REPO_ROOT/outputs"
 OSM_FILE="us-latest.osm.pbf"
 OSRM_BASE="${OSM_FILE%.osm.pbf}.osrm"
 IMAGE="osrm/osrm-backend"
@@ -23,7 +34,7 @@ docker stop osrm_server_ch  2>/dev/null && echo "Stopped existing osrm_server_ch
 docker stop osrm_server_mld 2>/dev/null && echo "Stopped existing osrm_server_mld container." || true
 
 echo "Starting OSRM CH server (port 5000) ..."
-CH_START_MS=$(date +%s%3N)
+CH_START_MS=$(get_now_ms)
 docker run -d --rm \
   -p 5000:5000 \
   --name osrm_server_ch \
@@ -36,12 +47,12 @@ echo "Waiting for CH server to be ready ..."
 until curl -sf "$PROBE_CH" > /dev/null 2>&1; do
   sleep 1
 done
-CH_STARTUP_MS=$(( $(date +%s%3N) - CH_START_MS ))
+CH_STARTUP_MS=$(( $(get_now_ms) - CH_START_MS ))
 echo "CH server ready at http://localhost:5000 (${CH_STARTUP_MS} ms)"
 
 echo ""
 echo "Starting OSRM MLD server (port 5001) ..."
-MLD_START_MS=$(date +%s%3N)
+MLD_START_MS=$(get_now_ms)
 docker run -d --rm \
   -p 5001:5000 \
   --name osrm_server_mld \
@@ -54,12 +65,14 @@ echo "Waiting for MLD server to be ready ..."
 until curl -sf "$PROBE_MLD" > /dev/null 2>&1; do
   sleep 1
 done
-MLD_STARTUP_MS=$(( $(date +%s%3N) - MLD_START_MS ))
+MLD_STARTUP_MS=$(( $(get_now_ms) - MLD_START_MS ))
 echo "MLD server ready at http://localhost:5001 (${MLD_STARTUP_MS} ms)"
 
-# TIMING_FILE="$(pwd)/outputs/osrm_start_timing.json"
-# printf '{\n  "ch_startup": %d,\n  "mld_startup": %d\n}\n' \
-#   "$CH_STARTUP_MS" "$MLD_STARTUP_MS" > "$TIMING_FILE"
-# echo ""
-# echo "Startup timings written to $TIMING_FILE"
-# echo "To stop: docker stop osrm_server_ch osrm_server_mld"
+mkdir -p "$OUTPUTS_DIR"
+TIMING_FILE="$OUTPUTS_DIR/osrm_start_timing.json"
+printf '{\n  "ch_startup": %d,\n  "mld_startup": %d\n}\n' \
+  "$CH_STARTUP_MS" "$MLD_STARTUP_MS" > "$TIMING_FILE"
+
+echo ""
+echo "Startup timings written to $TIMING_FILE"
+echo "To stop: docker stop osrm_server_ch osrm_server_mld"

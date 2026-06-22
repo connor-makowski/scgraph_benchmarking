@@ -39,6 +39,8 @@ Tests both OSRM algorithms (CH and MLD) on the same 3 city pairs used in `time_d
 | `osrm_ch` | OSRM Contraction Hierarchies server (port 5000) |
 | `osrm_mld` | OSRM Multi-Level Dijkstra server (port 5001) |
 | `osrm_pull` | Docker image pull stage (setup row only) |
+| `osrm_clone` | OSRM repository clone stage (Mac setup only) |
+| `osrm_build` | OSRM Docker image build stage (Mac setup only) |
 | `osrm_download` | US OSM PBF download stage (setup row only) |
 | `osrm_extract` | `osrm-extract` preprocessing stage (setup row only) |
 | `osrm_contract` | `osrm-contract` CH preprocessing stage (setup row only) |

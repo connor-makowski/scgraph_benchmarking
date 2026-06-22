@@ -100,6 +100,8 @@ for city1, coord1 in cities.items():
                 # One-time setup costs — same value on every row so the CSV
                 # is self-contained and can be analysed independently.
                 'osrm_pull_ms':        setup_timing['pull_ms'],
+                'osrm_clone_ms':       setup_timing['clone_ms'],
+                'osrm_build_ms':       setup_timing['build_ms'],
                 'osrm_download_ms':    setup_timing['download_ms'],
                 'osrm_extract_ms':     setup_timing['extract_ms'],
                 'osrm_contract_ms':    setup_timing['contract_ms'],

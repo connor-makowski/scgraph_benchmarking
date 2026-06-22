@@ -32,7 +32,9 @@ These are the step durations from `outputs/osrm_setup_timing.json`, written by `
 
 | Field | Description |
 |---|---|
-| `osrm_pull_ms` | Time (ms) to `docker pull osrm/osrm-backend` |
+| `osrm_pull_ms` | Time (ms) to `docker pull osrm/osrm-backend` (0 on Mac) |
+| `osrm_clone_ms` | Time (ms) to clone OSRM repository (Mac only) |
+| `osrm_build_ms` | Time (ms) to build OSRM Docker image (Mac only) |
 | `osrm_download_ms` | Time (ms) to download the US OSM PBF file (~9 GB) from Geofabrik |
 | `osrm_extract_ms` | Time (ms) for `osrm-extract` with the car/driving profile |
 | `osrm_contract_ms` | Time (ms) for `osrm-contract` (CH preprocessing) |
