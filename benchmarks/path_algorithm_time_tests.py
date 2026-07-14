@@ -113,6 +113,13 @@ for name, scgraph_object in graph_data:
         sc_bmssp_time_stats = pamda_timer(scgraph_graph_object.bmssp, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
         print(f"SCGraph BMSSP time: {sc_bmssp_time_stats['avg']:.2f} ms (stdev: {sc_bmssp_time_stats['std']:.2f})")
 
+        if graph_nodes < 50_000:
+            sc_bellman_ford_time_stats = pamda_timer(scgraph_graph_object.bellman_ford, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
+            print(f"SCGraph Bellman-Ford time: {sc_bellman_ford_time_stats['avg']:.2f} ms (stdev: {sc_bellman_ford_time_stats['std']:.2f})")
+        else:
+            print(f"Skipping SCGraph Bellman-Ford ({graph_nodes:,} nodes >= 50,000).")
+            sc_bellman_ford_time_stats = {'avg': None, 'std': None}
+
         if 'gridgraph' not in name.lower():
             sc_ch_time_stats = pamda_timer(scgraph_graph_object.contraction_hierarchy, iterations=10).get_time_stats(origin_id=origin, destination_id=destination)
             print(f"SCGraph CH time: {sc_ch_time_stats['avg']:.2f} ms (stdev: {sc_ch_time_stats['std']:.2f})")
@@ -137,6 +144,7 @@ for name, scgraph_object in graph_data:
             'sc_a_star_time_ms': sc_a_star_time_stats['avg'],
             'sc_dijkstra_buckets_time_ms': sc_dijkstra_buckets_time_stats['avg'],
             'sc_bmssp_time_ms': sc_bmssp_time_stats['avg'],
+            'sc_bellman_ford_time_ms': sc_bellman_ford_time_stats['avg'],
             'sc_ch_time_ms': sc_ch_time_stats['avg'],
             'sc_tnr_time_ms': sc_tnr_time_stats['avg'],
             'nx_dijkstra_stdev': nx_dijkstra_time_stats['std'],
@@ -145,6 +153,7 @@ for name, scgraph_object in graph_data:
             'sc_a_star_stdev': sc_a_star_time_stats['std'],
             'sc_dijkstra_buckets_stdev': sc_dijkstra_buckets_time_stats['std'],
             'sc_bmssp_stdev': sc_bmssp_time_stats['std'],
+            'sc_bellman_ford_stdev': sc_bellman_ford_time_stats['std'],
             'sc_ch_stdev': sc_ch_time_stats['std'],
             'sc_tnr_stdev': sc_tnr_time_stats['std'],
         })

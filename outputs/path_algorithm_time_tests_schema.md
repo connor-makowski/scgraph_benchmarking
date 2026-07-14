@@ -37,6 +37,7 @@ Measured once per graph (not per case). Blank for graph types where the algorith
 | `sc_a_star_time_ms` | scgraph A\* average solve time (ms) |
 | `sc_dijkstra_buckets_time_ms` | scgraph Dijkstra Buckets average solve time (ms) |
 | `sc_bmssp_time_ms` | scgraph BMSSP average solve time (ms) |
+| `sc_bellman_ford_time_ms` | scgraph Bellman-Ford average solve time (ms) |
 | `sc_ch_time_ms` | scgraph Contraction Hierarchy average solve time (ms) |
 | `sc_tnr_time_ms` | scgraph Transit Node Routing average solve time (ms) |
 
@@ -54,6 +55,7 @@ One `_stdev` column per solver, in the same order as the time columns above.
 | `sc_a_star_stdev` | Std dev (ms) of scgraph A\* times |
 | `sc_dijkstra_buckets_stdev` | Std dev (ms) of scgraph Dijkstra Buckets times |
 | `sc_bmssp_stdev` | Std dev (ms) of scgraph BMSSP times |
+| `sc_bellman_ford_stdev` | Std dev (ms) of scgraph Bellman-Ford times |
 | `sc_ch_stdev` | Std dev (ms) of scgraph CH times |
 | `sc_tnr_stdev` | Std dev (ms) of scgraph TNR times |
 
@@ -63,5 +65,6 @@ One `_stdev` column per solver, in the same order as the time columns above.
 
 - CH and TNR are only benchmarked on GeoGraph types, not GridGraphs — those cells are blank.
 - BMSSP is a bidirectional multi-source shortest path variant and tends to be slower on sparse graphs.
+- Bellman-Ford is only run on graphs with fewer than 50,000 nodes (`sc_bellman_ford_time_ms`/`sc_bellman_ford_stdev` are blank above that threshold), since it is dramatically slower than the other solvers on large graphs (seconds per solve vs. ms).
 - GridGraphs include a center-column wall (blocking rows 5+) to create non-trivial routing scenarios.
 - `node_steps_needed` is the path length in hops for the specific test case — useful for normalizing timing across cases of different difficulty.

@@ -111,7 +111,7 @@ Tests every `scgraph` algorithm on 7 built-in geographs against 10 US coastal ci
 - `distance_matrix` first and second pass (second pass benefits from cached shortest path trees)
 - Per-algorithm first + second pass totals and averages across all 100 pairs
 
-Algorithms tested: `dijkstra`, `a_star`, `bmssp`, `dijkstra_buckets`, `cached_shortest_path`, `contraction_hierarchy`, `tnr`
+Algorithms tested: `dijkstra`, `a_star`, `bmssp`, `bellman_ford`, `dijkstra_buckets`, `cached_shortest_path`, `contraction_hierarchy`, `tnr`
 
 Geographs tested: `marnet`, `oak_ridge_maritime`, `north_america_rail`, `us_freeway`, `world_highways_and_marnet`, `world_highways`, `world_railways`
 
@@ -141,7 +141,7 @@ Head-to-head timing of `scgraph` vs `NetworkX` vs `igraph` on 4 test cases per g
 
 For GeoGraphs, also times one-time CH and TNR preprocessing.
 
-Algorithms compared: NX Dijkstra, igraph shortest path, scgraph Dijkstra, scgraph A\*, scgraph Dijkstra Buckets, scgraph BMSSP, scgraph CH (GeoGraph only), scgraph TNR (GeoGraph only)
+Algorithms compared: NX Dijkstra, igraph shortest path, scgraph Dijkstra, scgraph A\*, scgraph Dijkstra Buckets, scgraph BMSSP, scgraph Bellman-Ford, scgraph CH (GeoGraph only), scgraph TNR (GeoGraph only)
 
 ### `time_dist_comparisons.py`
 Tests 3 city pairs (LA→SD, ORL→TAM, NYC→PHI) across solvers with separate data-prep and solve timing:
@@ -228,7 +228,7 @@ Required only for Google Routes tests. Google Routes API must be enabled in the 
 
 **`geo_time_comparison_tests.csv`**: `city1`, `city2`, `coord1`, `coord2`, `<solver>_time_ms`, `<solver>_length_km` for each solver
 
-**`path_algorithm_time_tests.csv`**: `graph_name`, `case_name`, `graph_nodes`, `graph_edges`, `node_steps_needed`, `sc_ch_build_ms`, `sc_tnr_build_ms`, `nx_dijkstra_time_ms`, `ig_shortest_path_time_ms`, `sc_dijkstra_modified_time_ms`, `sc_a_star_time_ms`, `sc_dijkstra_buckets_time_ms`, `sc_bmssp_time_ms`, `sc_ch_time_ms`, `sc_tnr_time_ms`, `nx_dijkstra_stdev`, `ig_shortest_path_stdev`, `sc_dijkstra_modified_stdev`, `sc_a_star_stdev`, `sc_dijkstra_buckets_stdev`, `sc_bmssp_stdev`, `sc_ch_stdev`, `sc_tnr_stdev`
+**`path_algorithm_time_tests.csv`**: `graph_name`, `case_name`, `graph_nodes`, `graph_edges`, `node_steps_needed`, `sc_ch_build_ms`, `sc_tnr_build_ms`, `nx_dijkstra_time_ms`, `ig_shortest_path_time_ms`, `sc_dijkstra_modified_time_ms`, `sc_a_star_time_ms`, `sc_dijkstra_buckets_time_ms`, `sc_bmssp_time_ms`, `sc_bellman_ford_time_ms`, `sc_ch_time_ms`, `sc_tnr_time_ms`, `nx_dijkstra_stdev`, `ig_shortest_path_stdev`, `sc_dijkstra_modified_stdev`, `sc_a_star_stdev`, `sc_dijkstra_buckets_stdev`, `sc_bmssp_stdev`, `sc_bellman_ford_stdev`, `sc_ch_stdev`, `sc_tnr_stdev`
 
 **`time_dist_comparisons.csv`**: `module`, `function`, `unit`, `iterations`, `avg`, `min`, `max`, `std`, `combination`, `category`, `solver`, `distance_km`
 

@@ -43,6 +43,7 @@ Each pass solves all 100 city-pairs. Pass 2 benefits from cached shortest-path t
 | `tnr_distance_matrix_pass_2` | All 100 pairs via TNR (second pass) |
 | `dijkstra_buckets_distance_matrix_pass_1` | All 100 pairs via Dijkstra Buckets (first pass) |
 | `dijkstra_buckets_distance_matrix_pass_2` | All 100 pairs via Dijkstra Buckets (second pass) |
+| `distance_matrix_bellman_ford_first_pass` | All 100 pairs via Bellman-Ford (single pass — no caching, so no second pass) |
 
 ---
 

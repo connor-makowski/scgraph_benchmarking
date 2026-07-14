@@ -83,6 +83,15 @@ def bmssp_solve(geograph, origin, destination):
         output_units='km', algorithm_fn='bmssp',
     )['length']
 
+def bellman_ford_solve(geograph, origin, destination):
+    if len(geograph.graph)> 50_000:
+        return None
+    else:
+        return geograph.get_shortest_path(
+            origin_node=origin, destination_node=destination,
+            output_units='km', algorithm_fn='bellman_ford',
+        )['length']
+
 # (name, solver_fn, second_pass) — second_pass=False for single-query algorithms
 algorithms = [
     ('dijkstra',              dijkstra_solve,         False),
@@ -92,6 +101,7 @@ algorithms = [
     ('cached_shortest_path',  cached_solve,           True),
     ('contraction_hierarchy', ch_solve,               True),
     ('tnr',                   tnr_solve,              True),
+    ('bellman_ford',          bellman_ford_solve,     False),
 ]
 
 output = []
@@ -164,7 +174,8 @@ for graph_name in geograph_names:
                 t0 = time.perf_counter()
                 dist = solver_fn(geograph, origin, destination)
                 elapsed = (time.perf_counter() - t0) * 1000
-                output_data[pass_type].append(elapsed)
+                if dist is not None:
+                    output_data[pass_type].append(elapsed)
 
         output.append({
             'function': f"distance_matrix_{algo_name}_first_pass",
