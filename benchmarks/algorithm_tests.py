@@ -99,8 +99,8 @@ algorithms = [
     ('bmssp',                 bmssp_solve,            False),
     ('dijkstra_buckets',      dijkstra_buckets_solve, False),
     ('cached_shortest_path',  cached_solve,           True),
-    ('contraction_hierarchy', ch_solve,               True),
-    ('tnr',                   tnr_solve,              True),
+    ('contraction_hierarchy', ch_solve,               False),
+    ('tnr',                   tnr_solve,              False),
     ('bellman_ford',          bellman_ford_solve,     False),
 ]
 
@@ -161,7 +161,7 @@ for graph_name in geograph_names:
         'graph': graph_name,
     })
 
-    geograph.graph_object.reset_cache()
+    geograph.graph_object.set_cache([0] * len(geograph.graph_object.graph))
 
     print('Calculating shortest paths...')
     for algo_name, solver_fn, second_pass in algorithms:
